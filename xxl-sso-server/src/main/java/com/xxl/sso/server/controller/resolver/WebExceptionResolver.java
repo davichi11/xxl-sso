@@ -1,7 +1,7 @@
 package com.xxl.sso.server.controller.resolver;
 
+import com.alibaba.fastjson.JSON;
 import com.xxl.sso.core.exception.XxlSsoException;
-import com.xxl.sso.core.util.JacksonUtil;
 import com.xxl.sso.server.core.result.ReturnT;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -45,11 +45,11 @@ public class WebExceptionResolver implements HandlerExceptionResolver {
         }
 
         // error result
-        ReturnT<String> errorResult = null;
+        ReturnT<String> errorResult;
         if (ex instanceof XxlSsoException) {
-            errorResult = new ReturnT<String>(ReturnT.FAIL_CODE, ex.getMessage());
+            errorResult = new ReturnT<>(ReturnT.FAIL_CODE, ex.getMessage());
         } else {
-            errorResult = new ReturnT<String>(ReturnT.FAIL_CODE, ex.toString().replaceAll("\n", "<br/>"));
+            errorResult = new ReturnT<>(ReturnT.FAIL_CODE, ex.toString().replaceAll("\n", "<br/>"));
         }
 
         // response
@@ -57,7 +57,7 @@ public class WebExceptionResolver implements HandlerExceptionResolver {
         if (isJson) {
             try {
                 response.setContentType("application/json;charset=utf-8");
-                response.getWriter().print(JacksonUtil.writeValueAsString(errorResult));
+                response.getWriter().print(JSON.toJSONString(errorResult));
             } catch (IOException e) {
                 logger.error(e.getMessage(), e);
             }

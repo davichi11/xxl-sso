@@ -27,7 +27,7 @@
                     <span class="glyphicon glyphicon-lock form-control-feedback"></span>
                 </div>
 
-                <#if errorMsg?exists>
+                <#if errorMsg??>
                     <p style="color: red;">${errorMsg}</p>
                 </#if>
 

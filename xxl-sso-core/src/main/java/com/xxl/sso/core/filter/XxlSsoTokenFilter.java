@@ -1,10 +1,11 @@
 package com.xxl.sso.core.filter;
 
+import com.alibaba.fastjson.JSON;
 import com.xxl.sso.core.conf.Conf;
 import com.xxl.sso.core.entity.ReturnT;
 import com.xxl.sso.core.user.XxlUser;
-import com.xxl.sso.core.util.JacksonUtil;
 import com.xxl.sso.core.util.SsoLoginHelper;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -28,7 +29,7 @@ public class XxlSsoTokenFilter extends HttpServlet implements Filter {
     public void init(FilterConfig filterConfig) throws ServletException {
 
         String ssoServer = filterConfig.getInitParameter(Conf.SSO_SERVER);
-        if (ssoServer !=null && ssoServer.trim().length()>0) {
+        if (ssoServer != null && ssoServer.trim().length() > 0) {
             logoutPath = filterConfig.getInitParameter(Conf.SSO_LOGOUT_PATH);
         }
 
@@ -47,9 +48,7 @@ public class XxlSsoTokenFilter extends HttpServlet implements Filter {
         XxlUser xxlUser = SsoLoginHelper.loginCheck(sessionid);
 
         // logout filter
-        if (logoutPath!=null
-                && logoutPath.trim().length()>0
-                && logoutPath.equals(servletPath)) {
+        if (StringUtils.isNotBlank(logoutPath) && logoutPath.equals(servletPath)) {
 
             if (xxlUser != null) {
                 SsoLoginHelper.logout(sessionid);
@@ -58,7 +57,7 @@ public class XxlSsoTokenFilter extends HttpServlet implements Filter {
             // response
             res.setStatus(HttpServletResponse.SC_OK);
             res.setContentType("application/json;charset=UTF-8");
-            res.getWriter().println(JacksonUtil.writeValueAsString(new ReturnT(ReturnT.SUCCESS_CODE, null)));
+            res.getWriter().println(JSON.toJSONString(new ReturnT(ReturnT.SUCCESS_CODE, null)));
             return;
         }
 
@@ -68,7 +67,7 @@ public class XxlSsoTokenFilter extends HttpServlet implements Filter {
             // response
             res.setStatus(HttpServletResponse.SC_OK);
             res.setContentType("application/json;charset=UTF-8");
-            res.getWriter().println(JacksonUtil.writeValueAsString(Conf.SSO_LOGIN_FAIL_RESULT));
+            res.getWriter().println(JSON.toJSONString(Conf.SSO_LOGIN_FAIL_RESULT));
             return;
         }
 

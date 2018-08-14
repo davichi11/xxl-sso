@@ -1,9 +1,10 @@
 package com.xxl.sso.core.filter;
 
+import com.alibaba.fastjson.JSON;
 import com.xxl.sso.core.conf.Conf;
 import com.xxl.sso.core.user.XxlUser;
-import com.xxl.sso.core.util.JacksonUtil;
 import com.xxl.sso.core.util.SsoLoginHelper;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -44,9 +45,7 @@ public class XxlSsoFilter extends HttpServlet implements Filter {
         String link = req.getRequestURL().toString();
 
         // logout filter
-        if (logoutPath != null
-                && logoutPath.trim().length() > 0
-                && logoutPath.equals(servletPath)) {
+        if (StringUtils.isNotBlank(logoutPath) && logoutPath.equals(servletPath)) {
 
             // remove cookie
             SsoLoginHelper.removeSessionIdInCookie(req, res);
@@ -90,13 +89,12 @@ public class XxlSsoFilter extends HttpServlet implements Filter {
 
                 // json msg
                 res.setContentType("application/json;charset=utf-8");
-                res.getWriter().println(JacksonUtil.writeValueAsString(Conf.SSO_LOGIN_FAIL_RESULT));
+                res.getWriter().println(JSON.toJSONString(Conf.SSO_LOGIN_FAIL_RESULT));
                 return;
             } else {
 
                 // redirect logout
-                String loginPageUrl = ssoServer.concat(Conf.SSO_LOGIN)
-                        + "?" + Conf.REDIRECT_URL + "=" + link;
+                String loginPageUrl = ssoServer.concat(Conf.SSO_LOGIN) + "?" + Conf.REDIRECT_URL + "=" + link;
 
                 res.sendRedirect(loginPageUrl);
                 return;
