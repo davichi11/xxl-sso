@@ -28,7 +28,7 @@ public class XxlSsoFilter extends HttpServlet implements Filter {
     public void init(FilterConfig filterConfig) throws ServletException {
 
         ssoServer = filterConfig.getInitParameter(Conf.SSO_SERVER);
-        if (ssoServer!=null && ssoServer.trim().length()>0) {
+        if (ssoServer != null && ssoServer.trim().length() > 0) {
             logoutPath = filterConfig.getInitParameter(Conf.SSO_LOGOUT_PATH);
         }
 
@@ -44,8 +44,8 @@ public class XxlSsoFilter extends HttpServlet implements Filter {
         String link = req.getRequestURL().toString();
 
         // logout filter
-        if (logoutPath!=null
-                && logoutPath.trim().length()>0
+        if (logoutPath != null
+                && logoutPath.trim().length() > 0
                 && logoutPath.equals(servletPath)) {
 
             // remove cookie
@@ -59,7 +59,7 @@ public class XxlSsoFilter extends HttpServlet implements Filter {
         }
 
         // login filter
-        XxlUser xxlUser = null;
+        XxlUser xxlUser;
 
         // valid cookie user
         String cookieSessionId = SsoLoginHelper.getSessionIdByCookie(req);
@@ -85,7 +85,7 @@ public class XxlSsoFilter extends HttpServlet implements Filter {
         if (xxlUser == null) {
 
             String header = req.getHeader("content-type");
-            boolean isJson=  header!=null && header.contains("json");
+            boolean isJson = header != null && header.contains("json");
             if (isJson) {
 
                 // json msg
@@ -110,7 +110,6 @@ public class XxlSsoFilter extends HttpServlet implements Filter {
 
         // already login, allow
         chain.doFilter(request, response);
-        return;
     }
 
 }

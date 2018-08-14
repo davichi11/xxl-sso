@@ -28,7 +28,7 @@ public class IndexController {
     @ResponseBody
     public ReturnT<XxlUser> json(Model model, HttpServletRequest request) {
         XxlUser xxlUser = (XxlUser) request.getAttribute(Conf.SSO_USER);
-        return new ReturnT(xxlUser);
+        return new ReturnT<>(xxlUser);
     }
 
 }

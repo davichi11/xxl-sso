@@ -20,71 +20,67 @@ import java.util.Map;
 
 /**
  * http util to send data
- * 
+ *
  * @author xuxueli
  * @version 2015-11-28 15:30:59
  */
 public class HttpClientUtil {
-	private static Logger logger = LoggerFactory.getLogger(HttpClientUtil.class);
+    private static Logger logger = LoggerFactory.getLogger(HttpClientUtil.class);
 
-	public static String post(String url, Map<String, String> params, Map<String, String> headers){
-		HttpPost httpPost = null;
-		CloseableHttpClient httpClient = null;
-		try{
-			// httpPost config
-			httpPost = new HttpPost(url);
-			if (params != null && !params.isEmpty()) {
-				List<NameValuePair> formParams = new ArrayList<NameValuePair>();
-				for(Map.Entry<String,String> entry : params.entrySet()){
-					formParams.add(new BasicNameValuePair(entry.getKey(), entry.getValue()));
-				}
-				httpPost.setEntity(new UrlEncodedFormEntity(formParams, "UTF-8"));
-			}
-			RequestConfig requestConfig = RequestConfig.custom().setSocketTimeout(5000).setConnectTimeout(5000).build();
-			httpPost.setConfig(requestConfig);
+    public static String post(String url, Map<String, String> params, Map<String, String> headers) {
+        HttpPost httpPost = null;
+        CloseableHttpClient httpClient = null;
+        try {
+            // httpPost config
+            httpPost = new HttpPost(url);
+            if (params != null && !params.isEmpty()) {
+                List<NameValuePair> formParams = new ArrayList<>();
+                params.forEach((key, value) -> formParams.add(new BasicNameValuePair(key, value)));
+                httpPost.setEntity(new UrlEncodedFormEntity(formParams, "UTF-8"));
+            }
+            RequestConfig requestConfig = RequestConfig.custom().setSocketTimeout(5000).setConnectTimeout(5000).build();
+            httpPost.setConfig(requestConfig);
 
-			// headers
-			if (headers!=null && headers.size()>0) {
-				for (Map.Entry<String, String> headerItem: headers.entrySet()) {
-					httpPost.setHeader(headerItem.getKey(), headerItem.getValue());
-				}
-			}
+            // headers
+            if (headers != null && headers.size() > 0) {
+                headers.forEach(httpPost::setHeader);
+            }
 
-			// httpClient = HttpClients.createDefault();	// default retry 3 times
-			// httpClient = HttpClients.custom().setRetryHandler(new DefaultHttpRequestRetryHandler(3, true)).build();
-			httpClient = HttpClients.custom().disableAutomaticRetries().build();
-			
-			// parse response
-			HttpResponse response = httpClient.execute(httpPost);
-			HttpEntity entity = response.getEntity();
-			if (null != entity) {
-				if (response.getStatusLine().getStatusCode() == 200) {
-					String responseMsg = EntityUtils.toString(entity, "UTF-8");
-					EntityUtils.consume(entity);
-					return responseMsg;
-				}
-				EntityUtils.consume(entity);
-			}
-			logger.info("http statusCode error, statusCode:" + response.getStatusLine().getStatusCode());
-			return null;
-		} catch (Exception e) {
-			e.printStackTrace();
+            // httpClient = HttpClients.createDefault();	// default retry 3 times
+            // httpClient = HttpClients.custom().setRetryHandler(new DefaultHttpRequestRetryHandler(3, true)).build();
+            httpClient = HttpClients.custom().disableAutomaticRetries().build();
+
+            // parse response
+            HttpResponse response = httpClient.execute(httpPost);
+            HttpEntity entity = response.getEntity();
+            if (null != entity) {
+                if (response.getStatusLine().getStatusCode() == 200) {
+                    String responseMsg = EntityUtils.toString(entity, "UTF-8");
+                    EntityUtils.consume(entity);
+                    return responseMsg;
+                }
+                EntityUtils.consume(entity);
+            }
+            logger.info("http statusCode error, statusCode:" + response.getStatusLine().getStatusCode());
+            return null;
+        } catch (Exception e) {
+            e.printStackTrace();
 			/*StringWriter out = new StringWriter();
 			e.printStackTrace(new PrintWriter(out));
 			callback.setMsg(out.toString());*/
-			return e.getMessage();
-		} finally{
-			if (httpPost!=null) {
-				httpPost.releaseConnection();
-			}
-			if (httpClient!=null) {
-				try {
-					httpClient.close();
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
-			}
-		}
-	}
+            return e.getMessage();
+        } finally {
+            if (httpPost != null) {
+                httpPost.releaseConnection();
+            }
+            if (httpClient != null) {
+                try {
+                    httpClient.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+    }
 
 }

@@ -20,8 +20,7 @@ public class SsoLoginHelper {
      * @return
      */
     public static String getSessionIdByCookie(HttpServletRequest request) {
-        String cookieSessionId = CookieUtil.getValue(request, Conf.SSO_SESSIONID);
-        return cookieSessionId;
+        return CookieUtil.getValue(request, Conf.SSO_SESSIONID);
     }
 
     /**
@@ -31,7 +30,7 @@ public class SsoLoginHelper {
      * @param sessionId
      */
     public static void setSessionIdInCookie(HttpServletResponse response, String sessionId) {
-        if (sessionId!=null && sessionId.trim().length()>0) {
+        if (sessionId != null && sessionId.trim().length() > 0) {
             CookieUtil.set(response, Conf.SSO_SESSIONID, sessionId, false);
         }
     }
@@ -53,8 +52,7 @@ public class SsoLoginHelper {
      * @return
      */
     public static String cookieSessionIdGetByHeader(HttpServletRequest request) {
-        String cookieSessionId = request.getHeader(Conf.SSO_SESSIONID);
-        return cookieSessionId;
+        return request.getHeader(Conf.SSO_SESSIONID);
     }
 
     /**
@@ -63,9 +61,9 @@ public class SsoLoginHelper {
      * @param request
      * @return
      */
-    public static XxlUser loginCheck(HttpServletRequest request){
+    public static XxlUser loginCheck(HttpServletRequest request) {
         String cookieSessionId = getSessionIdByCookie(request);
-        if (cookieSessionId!=null && cookieSessionId.trim().length()>0) {
+        if (cookieSessionId != null && cookieSessionId.trim().length() > 0) {
             return loginCheck(cookieSessionId);
         }
         return null;
@@ -77,8 +75,8 @@ public class SsoLoginHelper {
      * @param sessionId
      * @return
      */
-    public static XxlUser loginCheck(String  sessionId){
-        if (sessionId!=null && sessionId.trim().length()>0) {
+    public static XxlUser loginCheck(String sessionId) {
+        if (sessionId != null && sessionId.trim().length() > 0) {
             XxlUser xxlUser = SsoLoginStore.get(sessionId);
             if (xxlUser != null) {
                 return xxlUser;

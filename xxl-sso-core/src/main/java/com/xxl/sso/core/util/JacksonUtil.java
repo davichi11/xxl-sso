@@ -1,9 +1,6 @@
 package com.xxl.sso.core.util;
 
-import com.fasterxml.jackson.core.JsonGenerationException;
-import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -23,9 +20,9 @@ import java.util.Map;
 public class JacksonUtil {
 	private static Logger logger = LoggerFactory.getLogger(JacksonUtil.class);
 
-    private final static ObjectMapper objectMapper = new ObjectMapper();
-    public static ObjectMapper getInstance() {
-        return objectMapper;
+    private final static ObjectMapper OBJECT_MAPPER = new ObjectMapper();
+    private static ObjectMapper getInstance() {
+        return OBJECT_MAPPER;
     }
 
     /**
@@ -38,10 +35,6 @@ public class JacksonUtil {
     public static String writeValueAsString(Object obj) {
     	try {
 			return getInstance().writeValueAsString(obj);
-		} catch (JsonGenerationException e) {
-			logger.error(e.getMessage(), e);
-		} catch (JsonMappingException e) {
-			logger.error(e.getMessage(), e);
 		} catch (IOException e) {
 			logger.error(e.getMessage(), e);
 		}
@@ -59,11 +52,7 @@ public class JacksonUtil {
     public static <T> T readValue(String jsonStr, Class<T> clazz) {
     	try {
 			return getInstance().readValue(jsonStr, clazz);
-		} catch (JsonParseException e) {
-			logger.error(e.getMessage(), e);
-		} catch (JsonMappingException e) {
-			logger.error(e.getMessage(), e);
-		} catch (IOException e) {
+		} catch (Exception e) {
 			logger.error(e.getMessage(), e);
 		}
     	return null;
@@ -71,19 +60,15 @@ public class JacksonUtil {
     public static <T> T readValueRefer(String jsonStr, Class<T> clazz) {
     	try {
 			return getInstance().readValue(jsonStr, new TypeReference<T>() { });
-		} catch (JsonParseException e) {
-			logger.error(e.getMessage(), e);
-		} catch (JsonMappingException e) {
-			logger.error(e.getMessage(), e);
-		} catch (IOException e) {
+		} catch (Exception e) {
 			logger.error(e.getMessage(), e);
 		}
-    	return null;
+		return null;
     }
 
     public static void main(String[] args) {
 		try {
-			Map<String, String> map = new HashMap<String, String>();
+			Map<String, String> map = new HashMap<>();
 			map.put("aaa", "111");
 			map.put("bbb", "222");
 			String json = writeValueAsString(map);

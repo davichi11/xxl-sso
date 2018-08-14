@@ -22,8 +22,12 @@ import java.util.UUID;
 @RequestMapping("/app")
 public class AppController {
 
+    private final UserInfoDao userInfoDao;
+
     @Autowired
-    private UserInfoDao userInfoDao;
+    public AppController(UserInfoDao userInfoDao) {
+        this.userInfoDao = userInfoDao;
+    }
 
 
     /**
@@ -38,17 +42,17 @@ public class AppController {
     public ReturnT<String> login(String username, String password) {
 
         if (StringUtils.isBlank(username)) {
-            return new ReturnT<String>(ReturnT.FAIL_CODE, "Please input username.");
+            return new ReturnT<>(ReturnT.FAIL_CODE, "Please input username.");
         }
         if (StringUtils.isBlank(password)) {
-            return new ReturnT<String>(ReturnT.FAIL_CODE, "Please input password.");
+            return new ReturnT<>(ReturnT.FAIL_CODE, "Please input password.");
         }
         UserInfo existUser = userInfoDao.findByUsername(username);
         if (existUser == null) {
-            return new ReturnT<String>(ReturnT.FAIL_CODE, "username is invalid.");
+            return new ReturnT<>(ReturnT.FAIL_CODE, "username is invalid.");
         }
         if (!existUser.getPassword().equals(password)) {
-            return new ReturnT<String>(ReturnT.FAIL_CODE, "password is invalid.");
+            return new ReturnT<>(ReturnT.FAIL_CODE, "password is invalid.");
         }
 
         // login success
@@ -61,7 +65,7 @@ public class AppController {
         SsoLoginHelper.login(sessionId, xxlUser);
 
         // result
-        return new ReturnT<String>(sessionId);
+        return new ReturnT<>(sessionId);
     }
 
 
@@ -93,9 +97,9 @@ public class AppController {
         // logout
         XxlUser xxlUser = SsoLoginHelper.loginCheck(sessionId);
         if (xxlUser == null) {
-            return new ReturnT<XxlUser>(ReturnT.FAIL_CODE, "sso not login.");
+            return new ReturnT<>(ReturnT.FAIL_CODE, "sso not login.");
         }
-        return new ReturnT<XxlUser>(xxlUser);
+        return new ReturnT<>(xxlUser);
     }
 
 }

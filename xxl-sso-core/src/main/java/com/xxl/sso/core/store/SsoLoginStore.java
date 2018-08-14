@@ -21,11 +21,7 @@ public class SsoLoginStore {
 
         String redisKey = redisKey(sessionId);
         Object objectValue = JedisUtil.getObjectValue(redisKey);
-        if (objectValue != null) {
-            XxlUser xxlUser = (XxlUser) objectValue;
-            return xxlUser;
-        }
-        return null;
+        return objectValue != null ? (XxlUser) objectValue : null;
     }
 
     /**

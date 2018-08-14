@@ -19,7 +19,7 @@ public class IndexController {
     @ResponseBody
     public ReturnT<XxlUser> index(HttpServletRequest request) {
         XxlUser xxlUser = (XxlUser) request.getAttribute(Conf.SSO_USER);
-        return new ReturnT<XxlUser>(xxlUser);
+        return new ReturnT<>(xxlUser);
     }
 
 }

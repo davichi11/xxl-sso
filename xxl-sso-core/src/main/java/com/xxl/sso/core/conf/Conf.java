@@ -44,7 +44,7 @@ public class Conf {
      */
     public static final String SSO_LOGOUT_PATH = "logoutPath";
 
-    public static final ReturnT<String> SSO_LOGIN_FAIL_RESULT = new ReturnT(501, "sso not login.");
+    public static final ReturnT<String> SSO_LOGIN_FAIL_RESULT = new ReturnT<>(501, "sso not login.");
 
 
 }

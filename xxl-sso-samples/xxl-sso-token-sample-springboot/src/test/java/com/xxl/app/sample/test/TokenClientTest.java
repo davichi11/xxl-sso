@@ -17,10 +17,10 @@ import java.util.Map;
 public class TokenClientTest {
 	private static Logger logger = LoggerFactory.getLogger(TokenClientTest.class);
 
-	public static String ssoServer = "http://xxlssoserver.com:8080/xxl-sso-server";
+	public static String ssoServer = "http://localhost:8080/xxl-sso-server";
 
-	public static String client01 = "http://xxlssoclient1.com:8082/xxl-sso-token-sample-springboot/";
-	public static String client02 = "http://xxlssoclient2.com:8082/xxl-sso-token-sample-springboot/";
+	public static String client01 = "http://localhost:8082/xxl-sso-token-sample-springboot/";
+//	public static String client02 = "http://localhost:8082/xxl-sso-token-sample-springboot/";
 
 	@Test
 	public void test() throws Exception {
@@ -34,7 +34,7 @@ public class TokenClientTest {
 		Assert.assertNotNull(username);
 
 		clientApiRequestTest(client01, sessionId);
-		clientApiRequestTest(client02, sessionId);
+//		clientApiRequestTest(client02, sessionId);
 
 		// 注销：销毁 sso sessionId
 		boolean loginoutResult = logoutTest(sessionId);
@@ -45,7 +45,7 @@ public class TokenClientTest {
 		Assert.assertNull(username);
 
 		clientApiRequestTest(client01, sessionId);
-		clientApiRequestTest(client02, sessionId);
+//		clientApiRequestTest(client02, sessionId);
 	}
 
 	/**

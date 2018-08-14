@@ -22,14 +22,13 @@ import java.io.IOException;
 public class XxlSsoTokenFilter extends HttpServlet implements Filter {
     private static Logger logger = LoggerFactory.getLogger(XxlSsoTokenFilter.class);
 
-    private String ssoServer;
     private String logoutPath;
 
     @Override
     public void init(FilterConfig filterConfig) throws ServletException {
 
-        ssoServer = filterConfig.getInitParameter(Conf.SSO_SERVER);
-        if (ssoServer!=null && ssoServer.trim().length()>0) {
+        String ssoServer = filterConfig.getInitParameter(Conf.SSO_SERVER);
+        if (ssoServer !=null && ssoServer.trim().length()>0) {
             logoutPath = filterConfig.getInitParameter(Conf.SSO_LOGOUT_PATH);
         }
 
@@ -42,7 +41,7 @@ public class XxlSsoTokenFilter extends HttpServlet implements Filter {
         HttpServletResponse res = (HttpServletResponse) response;
 
         String servletPath = ((HttpServletRequest) request).getServletPath();
-        String link = req.getRequestURL().toString();
+//        String link = req.getRequestURL().toString();
 
         String sessionid = SsoLoginHelper.cookieSessionIdGetByHeader(req);
         XxlUser xxlUser = SsoLoginHelper.loginCheck(sessionid);
@@ -79,7 +78,6 @@ public class XxlSsoTokenFilter extends HttpServlet implements Filter {
 
         // already login, allow
         chain.doFilter(request, response);
-        return;
     }
 
 
