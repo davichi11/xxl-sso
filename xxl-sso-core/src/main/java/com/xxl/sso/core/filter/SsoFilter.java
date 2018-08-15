@@ -2,7 +2,7 @@ package com.xxl.sso.core.filter;
 
 import com.alibaba.fastjson.JSON;
 import com.xxl.sso.core.conf.Conf;
-import com.xxl.sso.core.user.XxlUser;
+import com.xxl.sso.core.user.User;
 import com.xxl.sso.core.util.SsoLoginHelper;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -19,8 +19,8 @@ import java.io.IOException;
  *
  * @author xuxueli 2018-04-03
  */
-public class XxlSsoFilter extends HttpServlet implements Filter {
-    private static Logger logger = LoggerFactory.getLogger(XxlSsoFilter.class);
+public class SsoFilter extends HttpServlet implements Filter {
+    private static Logger logger = LoggerFactory.getLogger(SsoFilter.class);
 
     private String ssoServer;
     private String logoutPath;
@@ -33,7 +33,7 @@ public class XxlSsoFilter extends HttpServlet implements Filter {
             logoutPath = filterConfig.getInitParameter(Conf.SSO_LOGOUT_PATH);
         }
 
-        logger.info("XxlSsoFilter init.");
+        logger.info("SsoFilter init.");
     }
 
     @Override
@@ -58,14 +58,14 @@ public class XxlSsoFilter extends HttpServlet implements Filter {
         }
 
         // login filter
-        XxlUser xxlUser;
+        User user;
 
         // valid cookie user
         String cookieSessionId = SsoLoginHelper.getSessionIdByCookie(req);
-        xxlUser = SsoLoginHelper.loginCheck(cookieSessionId);
+        user = SsoLoginHelper.loginCheck(cookieSessionId);
 
         // valid param user, client login
-        if (xxlUser == null) {
+        if (user == null) {
 
             // remove old cookie
             SsoLoginHelper.removeSessionIdInCookie(req, res);
@@ -73,15 +73,15 @@ public class XxlSsoFilter extends HttpServlet implements Filter {
             // set new cookie
             String paramSessionId = request.getParameter(Conf.SSO_SESSIONID);
             if (paramSessionId != null) {
-                xxlUser = SsoLoginHelper.loginCheck(paramSessionId);
-                if (xxlUser != null) {
+                user = SsoLoginHelper.loginCheck(paramSessionId);
+                if (user != null) {
                     SsoLoginHelper.setSessionIdInCookie(res, paramSessionId);
                 }
             }
         }
 
         // valid login fail
-        if (xxlUser == null) {
+        if (user == null) {
 
             String header = req.getHeader("content-type");
             boolean isJson = header != null && header.contains("json");
@@ -103,7 +103,7 @@ public class XxlSsoFilter extends HttpServlet implements Filter {
         }
 
         // ser sso user
-        request.setAttribute(Conf.SSO_USER, xxlUser);
+        request.setAttribute(Conf.SSO_USER, user);
 
 
         // already login, allow

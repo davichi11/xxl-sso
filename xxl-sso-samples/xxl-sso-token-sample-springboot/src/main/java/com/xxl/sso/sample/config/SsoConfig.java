@@ -1,7 +1,7 @@
 package com.xxl.sso.sample.config;
 
 import com.xxl.sso.core.conf.Conf;
-import com.xxl.sso.core.filter.XxlSsoTokenFilter;
+import com.xxl.sso.core.filter.SsoTokenFilter;
 import com.xxl.sso.core.util.JedisUtil;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
@@ -12,7 +12,7 @@ import org.springframework.context.annotation.Configuration;
  * @author huchunliang
  */
 @Configuration
-public class XxlSsoConfig {
+public class SsoConfig {
 
     @Value("${xxl.sso.server}")
     private String xxlSsoServer;
@@ -32,10 +32,10 @@ public class XxlSsoConfig {
         // filter
         FilterRegistrationBean registration = new FilterRegistrationBean();
 
-        registration.setName("XxlSsoFilter");
+        registration.setName("SsoFilter");
         registration.setOrder(1);
         registration.addUrlPatterns("/*");
-        registration.setFilter(new XxlSsoTokenFilter());
+        registration.setFilter(new SsoTokenFilter());
         registration.addInitParameter(Conf.SSO_SERVER, xxlSsoServer);
         registration.addInitParameter(Conf.SSO_LOGOUT_PATH, xxlSsoLogoutPath);
 

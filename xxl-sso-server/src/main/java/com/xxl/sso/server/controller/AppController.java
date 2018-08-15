@@ -1,6 +1,6 @@
 package com.xxl.sso.server.controller;
 
-import com.xxl.sso.core.user.XxlUser;
+import com.xxl.sso.core.user.User;
 import com.xxl.sso.core.util.SsoLoginHelper;
 import com.xxl.sso.server.core.model.UserInfo;
 import com.xxl.sso.server.core.result.ReturnT;
@@ -56,13 +56,13 @@ public class AppController {
         }
 
         // login success
-        XxlUser xxlUser = new XxlUser();
-        xxlUser.setUserid(existUser.getId());
-        xxlUser.setUsername(existUser.getUsername());
+        User user = new User();
+        user.setUserid(existUser.getId());
+        user.setUsername(existUser.getUsername());
 
         String sessionId = UUID.randomUUID().toString();
 
-        SsoLoginHelper.login(sessionId, xxlUser);
+        SsoLoginHelper.login(sessionId, user);
 
         // result
         return new ReturnT<>(sessionId);
@@ -92,14 +92,14 @@ public class AppController {
      */
     @RequestMapping("/logincheck")
     @ResponseBody
-    public ReturnT<XxlUser> logincheck(String sessionId) {
+    public ReturnT<User> logincheck(String sessionId) {
 
         // logout
-        XxlUser xxlUser = SsoLoginHelper.loginCheck(sessionId);
-        if (xxlUser == null) {
+        User user = SsoLoginHelper.loginCheck(sessionId);
+        if (user == null) {
             return new ReturnT<>(ReturnT.FAIL_CODE, "sso not login.");
         }
-        return new ReturnT<>(xxlUser);
+        return new ReturnT<>(user);
     }
 
 }

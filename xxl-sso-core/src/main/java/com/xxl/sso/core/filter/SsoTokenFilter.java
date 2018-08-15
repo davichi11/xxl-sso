@@ -3,7 +3,7 @@ package com.xxl.sso.core.filter;
 import com.alibaba.fastjson.JSON;
 import com.xxl.sso.core.conf.Conf;
 import com.xxl.sso.core.entity.ReturnT;
-import com.xxl.sso.core.user.XxlUser;
+import com.xxl.sso.core.user.User;
 import com.xxl.sso.core.util.SsoLoginHelper;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -20,8 +20,8 @@ import java.io.IOException;
  *
  * @author xuxueli 2018-04-08 21:30:54
  */
-public class XxlSsoTokenFilter extends HttpServlet implements Filter {
-    private static Logger logger = LoggerFactory.getLogger(XxlSsoTokenFilter.class);
+public class SsoTokenFilter extends HttpServlet implements Filter {
+    private static Logger logger = LoggerFactory.getLogger(SsoTokenFilter.class);
 
     private String logoutPath;
 
@@ -33,7 +33,7 @@ public class XxlSsoTokenFilter extends HttpServlet implements Filter {
             logoutPath = filterConfig.getInitParameter(Conf.SSO_LOGOUT_PATH);
         }
 
-        logger.info("XxlSsoFilter init.");
+        logger.info("SsoFilter init.");
     }
 
     @Override
@@ -45,12 +45,12 @@ public class XxlSsoTokenFilter extends HttpServlet implements Filter {
 //        String link = req.getRequestURL().toString();
 
         String sessionid = SsoLoginHelper.cookieSessionIdGetByHeader(req);
-        XxlUser xxlUser = SsoLoginHelper.loginCheck(sessionid);
+        User user = SsoLoginHelper.loginCheck(sessionid);
 
         // logout filter
         if (StringUtils.isNotBlank(logoutPath) && logoutPath.equals(servletPath)) {
 
-            if (xxlUser != null) {
+            if (user != null) {
                 SsoLoginHelper.logout(sessionid);
             }
 
@@ -62,7 +62,7 @@ public class XxlSsoTokenFilter extends HttpServlet implements Filter {
         }
 
         // login filter
-        if (xxlUser == null) {
+        if (user == null) {
 
             // response
             res.setStatus(HttpServletResponse.SC_OK);
@@ -72,7 +72,7 @@ public class XxlSsoTokenFilter extends HttpServlet implements Filter {
         }
 
         // ser sso user
-        request.setAttribute(Conf.SSO_USER, xxlUser);
+        request.setAttribute(Conf.SSO_USER, user);
 
 
         // already login, allow

@@ -7,7 +7,7 @@ import java.io.Serializable;
  *
  * @author xuxueli 2018-04-02 19:59:49
  */
-public class XxlUser implements Serializable {
+public class User implements Serializable {
     private static final long serialVersionUID = 42L;
 
     private int userid;

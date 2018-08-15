@@ -2,7 +2,7 @@ package com.xxl.sso.core.util;
 
 import com.xxl.sso.core.conf.Conf;
 import com.xxl.sso.core.store.SsoLoginStore;
-import com.xxl.sso.core.user.XxlUser;
+import com.xxl.sso.core.user.User;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -61,7 +61,7 @@ public class SsoLoginHelper {
      * @param request
      * @return
      */
-    public static XxlUser loginCheck(HttpServletRequest request) {
+    public static User loginCheck(HttpServletRequest request) {
         String cookieSessionId = getSessionIdByCookie(request);
         if (cookieSessionId != null && cookieSessionId.trim().length() > 0) {
             return loginCheck(cookieSessionId);
@@ -75,11 +75,11 @@ public class SsoLoginHelper {
      * @param sessionId
      * @return
      */
-    public static XxlUser loginCheck(String sessionId) {
+    public static User loginCheck(String sessionId) {
         if (sessionId != null && sessionId.trim().length() > 0) {
-            XxlUser xxlUser = SsoLoginStore.get(sessionId);
-            if (xxlUser != null) {
-                return xxlUser;
+            User user = SsoLoginStore.get(sessionId);
+            if (user != null) {
+                return user;
             }
         }
         return null;
@@ -90,13 +90,13 @@ public class SsoLoginHelper {
      *
      * @param response
      * @param sessionId
-     * @param xxlUser
+     * @param user
      */
     public static void login(HttpServletResponse response,
                              String sessionId,
-                             XxlUser xxlUser) {
+                             User user) {
 
-        SsoLoginStore.put(sessionId, xxlUser);
+        SsoLoginStore.put(sessionId, user);
         CookieUtil.set(response, Conf.SSO_SESSIONID, sessionId, false);
     }
 
@@ -104,11 +104,11 @@ public class SsoLoginHelper {
      * client login (app)
      *
      * @param sessionId
-     * @param xxlUser
+     * @param user
      */
     public static void login(String sessionId,
-                             XxlUser xxlUser) {
-        SsoLoginStore.put(sessionId, xxlUser);
+                             User user) {
+        SsoLoginStore.put(sessionId, user);
     }
 
 

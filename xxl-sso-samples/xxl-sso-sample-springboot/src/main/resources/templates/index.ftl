@@ -7,7 +7,7 @@
 <body>
 
     <div style="text-align: center;margin-top: 100px;">
-        <h1>【${xxlUser.username}】login success.</h1>
+        <h1>【${user.username}】login success.</h1>
 
         <a href="${request.contextPath}/logout">Logout</a>
 

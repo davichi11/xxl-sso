@@ -1,8 +1,8 @@
 package com.xxl.sso.server.controller;
 
 import com.xxl.sso.core.conf.Conf;
-import com.xxl.sso.core.exception.XxlSsoException;
-import com.xxl.sso.core.user.XxlUser;
+import com.xxl.sso.core.exception.SsoException;
+import com.xxl.sso.core.user.User;
 import com.xxl.sso.core.util.SsoLoginHelper;
 import com.xxl.sso.server.core.model.UserInfo;
 import com.xxl.sso.server.dao.UserInfoDao;
@@ -32,12 +32,12 @@ public class IndexController {
     public String index(Model model, HttpServletRequest request) {
 
         // login check
-        XxlUser xxlUser = SsoLoginHelper.loginCheck(request);
+        User user = SsoLoginHelper.loginCheck(request);
 
-        if (xxlUser == null) {
+        if (user == null) {
             return "redirect:/login";
         } else {
-            model.addAttribute("xxlUser", xxlUser);
+            model.addAttribute("xxlUser", user);
             return "index";
         }
     }
@@ -53,9 +53,9 @@ public class IndexController {
     public String login(Model model, HttpServletRequest request) {
 
         // login check
-        XxlUser xxlUser = SsoLoginHelper.loginCheck(request);
+        User user = SsoLoginHelper.loginCheck(request);
 
-        if (xxlUser != null) {
+        if (user != null) {
 
             // success redirect
             String redirectUrl = request.getParameter(Conf.REDIRECT_URL);
@@ -96,19 +96,19 @@ public class IndexController {
         UserInfo existUser = null;
         try {
             if (StringUtils.isBlank(username)) {
-                throw new XxlSsoException("Please input username.");
+                throw new SsoException("Please input username.");
             }
             if (StringUtils.isBlank(password)) {
-                throw new XxlSsoException("Please input password.");
+                throw new SsoException("Please input password.");
             }
             existUser = userInfoDao.findByUsername(username);
             if (existUser == null) {
-                throw new XxlSsoException("username is invalid.");
+                throw new SsoException("username is invalid.");
             }
             if (!existUser.getPassword().equals(password)) {
-                throw new XxlSsoException("password is invalid.");
+                throw new SsoException("password is invalid.");
             }
-        } catch (XxlSsoException e) {
+        } catch (SsoException e) {
             errorMsg = e.getMessage();
         }
 
@@ -120,13 +120,13 @@ public class IndexController {
         }
 
         // login success
-        XxlUser xxlUser = new XxlUser();
-        xxlUser.setUserid(existUser.getId());
-        xxlUser.setUsername(existUser.getUsername());
+        User user = new User();
+        user.setUserid(existUser.getId());
+        user.setUsername(existUser.getUsername());
 
         String sessionId = UUID.randomUUID().toString();
 
-        SsoLoginHelper.login(response, sessionId, xxlUser);
+        SsoLoginHelper.login(response, sessionId, user);
 
         // success redirect
         String redirectUrl = request.getParameter(Conf.REDIRECT_URL);
